@@ -1,1 +1,1 @@
-###Scheduling Algorithm Simulator
+# Scheduling Algorithm Simulator
