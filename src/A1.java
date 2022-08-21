@@ -3,13 +3,9 @@ import java.io.*;
 
 public class A1 {
     private static String filename;
-    private static int dispatcher;
-    private ArrayList<Process> processes = new ArrayList<>();
-    private FirstComeFirstServe firstComeFirstServe = new FirstComeFirstServe();
-    private RoundRobin roundRobin = new RoundRobin();
-    private NarrowRoundRobin narrowRoundRobin = new NarrowRoundRobin();
-    private FeedbackConstant feedbackConstant = new FeedbackConstant();
-    
+    private static int dispatcherTime;
+    private ProcessQueue<Process> processQueue = new ProcessQueue<>();
+
     public static void main(String[] args) throws Exception{
         try{
             filename = args[0];
@@ -34,7 +30,7 @@ public class A1 {
             while(scanner.hasNext()){
                 String next = scanner.next();
                 if(next.equals("DISP:")){
-                    dispatcher = Integer.parseInt(scanner.next());
+                    dispatcherTime = Integer.parseInt(scanner.next());
                 }
 
                 if(next.equals("END")){
@@ -58,7 +54,7 @@ public class A1 {
                     if(scanner.next().equals("ExecSize:")){
                         execSize = Integer.parseInt(scanner.next());
                     }
-                    processes.add(new Process(id, arriveTime, execSize));
+                    processQueue.push(new Process(id, arriveTime, execSize));
                 }
             }
         }
@@ -67,7 +63,9 @@ public class A1 {
     }
 
     private void run(){
-        
+        FirstComeFirstServe FCFS = new FirstComeFirstServe(dispatcherTime, processQueue);
+        RoundRobin RR = new RoundRobin(dispatcherTime, processQueue, 4);
+        RR.runAlgo();
     }
 
     private void printResults(){
