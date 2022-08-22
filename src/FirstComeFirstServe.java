@@ -10,10 +10,11 @@ public class FirstComeFirstServe extends Algorithm{
         }
 
         while(readyQueue.getSize() != 0){
-            Process process = readyQueue.pop();
+            currProcess = readyQueue.pop();
             currTime += getDispTime();
-            currTime += process.getExecSize();
-            System.out.println("\nFIN: " + currTime + "\nTR: " + (currTime - process.getArriveTime()) + "\nTW: " + (currTime - process.getExecSize() - process.getArriveTime()));
+            currTime += currProcess.getExecSize();
+            currProcess.setProcessingStats(currTime - currProcess.getArriveTime(), currTime - currProcess.getServiceTime() - currProcess.getArriveTime(), currTime);
+            System.out.println(currProcess.processInfo());
             if(processQueue.getSize() != 0){
                 primeReadyQueue();
             }
