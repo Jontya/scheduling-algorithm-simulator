@@ -15,7 +15,7 @@ public class RoundRobin extends Algorithm{
             if(currProcess.getExecSize() > timeQuantum){
                 if(readyQueue.getSize() == 0 && processQueue.getSize() == 0){
                     currTime += currProcess.getExecSize();
-                    System.out.println("\nID: " + currProcess.getId() + "\nFIN: " + currTime + "\nTR: " + (currTime - currProcess.getArriveTime()) + "\nTW: " + 0);
+                    currProcess.setProcessingStats(currTime - currProcess.getArriveTime(), currTime - currProcess.getServiceTime() - currProcess.getArriveTime(), currTime);
                 }
                 else{
                     currProcess.setExecSize(currProcess.getExecSize() - timeQuantum);
@@ -30,12 +30,11 @@ public class RoundRobin extends Algorithm{
             } 
             else{
                 currTime += currProcess.getExecSize();
+                currProcess.setProcessingStats(currTime - currProcess.getArriveTime(), currTime - currProcess.getServiceTime() - currProcess.getArriveTime(), currTime);
 
                 if(processQueue.getSize() != 0){
                     primeReadyQueue();
                 }
-
-                System.out.println("\nID: " + currProcess.getId() + "\nFIN: " + currTime + "\nTR: " + (currTime - currProcess.getArriveTime()) + "\nTW: " + 0);
             }
         }
     }
