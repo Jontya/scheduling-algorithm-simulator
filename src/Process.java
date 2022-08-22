@@ -7,7 +7,6 @@ public class Process {
     private int turnaroundTime;
     private int waitingTime;
 
-
     public Process(String _id, int _arriveTime, int _execSize){
         id = _id;
         arriveTime = _arriveTime;
