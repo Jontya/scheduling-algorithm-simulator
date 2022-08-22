@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class RoundRobin extends Algorithm{
     public RoundRobin(int _dispatcherTime, ProcessQueue<Process> _processQueue, int _timeQuantum){
         super(_dispatcherTime, _processQueue);
@@ -7,22 +5,8 @@ public class RoundRobin extends Algorithm{
     }
 
     public void runAlgo(){
-        ProcessQueue<Process> readyQueue = new ProcessQueue<>();
-        Process currProcess;
-        int processQueueSize;
-        boolean done = false;
-
         if(processQueue.getSize() != 0){
-            processQueueSize = processQueue.getSize();
-            for(int i = 0; i < processQueueSize; i++){
-                Process temp = processQueue.pop();
-                if(temp.getArriveTime() <= currTime){
-                    readyQueue.push(temp);
-                }
-                else{
-                    processQueue.push(temp);
-                }
-            }
+            primeReadyQueue();
         }
 
         while(readyQueue.getSize() != 0){
@@ -38,16 +22,7 @@ public class RoundRobin extends Algorithm{
                     currTime += timeQuantum;
 
                     if(processQueue.getSize() != 0){
-                        processQueueSize = processQueue.getSize();
-                        for(int i = 0; i < processQueueSize; i++){
-                            Process temp = processQueue.pop();
-                            if(temp.getArriveTime() <= currTime){
-                                readyQueue.push(temp);
-                            }
-                            else{
-                                processQueue.push(temp);
-                            }
-                        }
+                        primeReadyQueue();
                     }
 
                     readyQueue.push(currProcess);
@@ -57,16 +32,7 @@ public class RoundRobin extends Algorithm{
                 currTime += currProcess.getExecSize();
 
                 if(processQueue.getSize() != 0){
-                    processQueueSize = processQueue.getSize();
-                    for(int i = 0; i < processQueueSize; i++){
-                        Process temp = processQueue.pop();
-                        if(temp.getArriveTime() <= currTime){
-                            readyQueue.push(temp);
-                        }
-                        else{
-                            processQueue.push(temp);
-                        }
-                    }
+                    primeReadyQueue();
                 }
 
                 System.out.println("\nID: " + currProcess.getId() + "\nFIN: " + currTime + "\nTR: " + (currTime - currProcess.getArriveTime()) + "\nTW: " + 0);
