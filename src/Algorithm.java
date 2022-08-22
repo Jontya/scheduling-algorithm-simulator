@@ -4,6 +4,7 @@ public abstract class Algorithm {
     protected Process currProcess;
     protected int currTime;
     protected int timeQuantum;
+
     protected ProcessQueue<Process> processQueue;
     protected ProcessQueue<Process> readyQueue;
 
@@ -20,7 +21,7 @@ public abstract class Algorithm {
     public int getDispTime(){
         return dispatcherTime;
     }
-
+    
     public void primeReadyQueue(){
         int processQueueSize;
         processQueueSize = processQueue.getSize();
