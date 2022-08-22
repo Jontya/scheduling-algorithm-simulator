@@ -65,7 +65,8 @@ public class A1 {
     private void run(){
         FirstComeFirstServe FCFS = new FirstComeFirstServe(dispatcherTime, processQueue);
         RoundRobin RR = new RoundRobin(dispatcherTime, processQueue, 4);
-        FCFS.runAlgo();
+        NarrowRoundRobin NRR = new NarrowRoundRobin(dispatcherTime, processQueue, 4);
+        NRR.runAlgo();
     }
 
     private void printResults(){
