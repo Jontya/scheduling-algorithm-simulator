@@ -2,6 +2,7 @@ public class RoundRobin extends Algorithm{
     public RoundRobin(int _dispatcherTime, ProcessQueue<Process> _processQueue, int _timeQuantum){
         super(_dispatcherTime, _processQueue);
         timeQuantum = _timeQuantum;
+        algoName = "RR";
     }
 
     public void runAlgo(){
@@ -12,13 +13,16 @@ public class RoundRobin extends Algorithm{
         while(readyQueue.getSize() != 0){
             currTime += getDispTime();
             currProcess = readyQueue.pop();
-            if(currProcess.getExecSize() > timeQuantum){
+            dispatcherEvents.add("T" + currTime + ": " + currProcess.getId() + "\n");
+
+            if(currProcess.getRemainingTime() > timeQuantum){
                 if(readyQueue.getSize() == 0 && processQueue.getSize() == 0){
-                    currTime += currProcess.getExecSize();
-                    currProcess.setProcessingStats(currTime - currProcess.getArriveTime(), currTime - currProcess.getServiceTime() - currProcess.getArriveTime(), currTime);
+                    currTime += currProcess.getRemainingTime();
+                    String[] processingEvent = {currProcess.getId(), Integer.toString(currTime - currProcess.getArriveTime()), Integer.toString(currTime - currProcess.getExecSize() - currProcess.getArriveTime())};
+                    processingEvents.add(processingEvent);
                 }
                 else{
-                    currProcess.setExecSize(currProcess.getExecSize() - timeQuantum);
+                    currProcess.setRemainingTime(currProcess.getRemainingTime() - timeQuantum);
                     currTime += timeQuantum;
 
                     if(processQueue.getSize() != 0){
@@ -29,12 +33,14 @@ public class RoundRobin extends Algorithm{
                 }
             } 
             else{
-                currTime += currProcess.getExecSize();
-                currProcess.setProcessingStats(currTime - currProcess.getArriveTime(), currTime - currProcess.getServiceTime() - currProcess.getArriveTime(), currTime);
-
+                currTime += currProcess.getRemainingTime();
+                
                 if(processQueue.getSize() != 0){
                     primeReadyQueue();
                 }
+
+                String[] processingEvent = {currProcess.getId(), Integer.toString(currTime - currProcess.getArriveTime()), Integer.toString(currTime - currProcess.getExecSize() - currProcess.getArriveTime())};
+                processingEvents.add(processingEvent);
             }
         }
     }

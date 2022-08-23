@@ -2,6 +2,7 @@ public class NarrowRoundRobin extends Algorithm{
     public NarrowRoundRobin(int _dispatcherTime, ProcessQueue<Process> _processQueue, int _timeQuantum){
         super(_dispatcherTime, _processQueue);
         timeQuantum = _timeQuantum;
+        algoName = "NRR";
     }
 
     public void runAlgo(){
@@ -19,17 +20,19 @@ public class NarrowRoundRobin extends Algorithm{
         while(readyQueue.getSize() != 0){
             currTime += getDispTime();
             currProcess = readyQueue.pop();
-            //System.out.println(currProcess.getId());
-            if(currProcess.getExecSize() > currProcess.getTimeQuantum()){
+            dispatcherEvents.add("T" + currTime + ": " + currProcess.getId() + "\n");
+    
+            if(currProcess.getRemainingTime() > currProcess.getTimeQuantum()){
                 if(readyQueue.getSize() == 0 && processQueue.getSize() == 0){
-                    currTime += currProcess.getExecSize();
-                    currProcess.setProcessingStats(currTime - currProcess.getArriveTime(), currTime - currProcess.getServiceTime() - currProcess.getArriveTime(), currTime);
-                    System.out.println(currProcess.processInfo());
+                    currTime += currProcess.getRemainingTime();
+
+                    String[] processingEvent = {currProcess.getId(), Integer.toString(currTime - currProcess.getArriveTime()), Integer.toString(currTime - currProcess.getExecSize() - currProcess.getArriveTime())};
+                    processingEvents.add(processingEvent);
                 }
                 else{
-                    currProcess.setExecSize(currProcess.getExecSize() - currProcess.getTimeQuantum());
+                    currProcess.setRemainingTime(currProcess.getRemainingTime() - currProcess.getTimeQuantum());
                     currTime += currProcess.getTimeQuantum();
-                    currProcess.incrementTimeQuantum();
+                    currProcess.decrementTimeQuantum();
 
                     if(processQueue.getSize() != 0){
                         primeReadyQueue();
@@ -39,13 +42,14 @@ public class NarrowRoundRobin extends Algorithm{
                 }
             } 
             else{
-                currTime += currProcess.getExecSize();
-                currProcess.setProcessingStats(currTime - currProcess.getArriveTime(), currTime - currProcess.getServiceTime() - currProcess.getArriveTime(), currTime);
-                System.out.println(currProcess.processInfo());
+                currTime += currProcess.getRemainingTime();
 
                 if(processQueue.getSize() != 0){
                     primeReadyQueue();
                 }
+
+                String[] processingEvent = {currProcess.getId(), Integer.toString(currTime - currProcess.getArriveTime()), Integer.toString(currTime - currProcess.getExecSize() - currProcess.getArriveTime())};
+                processingEvents.add(processingEvent);
             }
         }
     }
