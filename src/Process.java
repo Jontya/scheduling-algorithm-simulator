@@ -2,8 +2,8 @@ public class Process {
     private String id;
     private int arriveTime;
     private int execSize;
-
-    private int serviceTime;
+    private int remainingTime;
+    
     private int finishedTime;
     private int turnaroundTime;
     private int waitingTime;
@@ -15,7 +15,7 @@ public class Process {
         id = _id;
         arriveTime = _arriveTime;
         execSize = _execSize;
-        serviceTime = _execSize;
+        remainingTime = _execSize;
     }
 
     public void setProcessingStats(int _turnaroundTime, int _waitingTime, int _finishedTime){
@@ -32,8 +32,8 @@ public class Process {
         return arriveTime;
     }
 
-    public int getServiceTime(){
-        return serviceTime;
+    public int getRemainingTime(){
+        return remainingTime;
     }
 
     public int getExecSize(){
@@ -44,16 +44,16 @@ public class Process {
         return timeQuantum;
     }
 
-    public void setExecSize(int _execSize){
-        execSize = _execSize;
-    }
-
     public void setTimeQuantum(int _timeQuantum, int _minTimeQuantum){
         timeQuantum = _timeQuantum;
         minTimeQuantum = _minTimeQuantum;
     }
+    
+    public void setRemainingTime(int _remainingTime){
+        remainingTime = _remainingTime;
+    }
 
-    public void incrementTimeQuantum(){
+    public void decrementTimeQuantum(){
         if(timeQuantum <= minTimeQuantum){
             return;
         }
