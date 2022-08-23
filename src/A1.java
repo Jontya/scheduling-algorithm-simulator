@@ -1,27 +1,28 @@
 import java.util.*;
 import java.io.*;
 
-public class A1 {
+public class A1{
     private static String filename;
     private static int dispatcherTime;
-    private ProcessQueue<Process> processQueue = new ProcessQueue<>();
+    private int timeQuantum = 4;
 
     public static void main(String[] args) throws Exception{
         try{
             filename = args[0];
             A1 schedulingAlgorithmSimulator = new A1();
-            schedulingAlgorithmSimulator.readFile();
+            schedulingAlgorithmSimulator.run();
         }
         catch(ArrayIndexOutOfBoundsException e){
             System.out.println("Missing Filename Argument");
         }
     }
 
-    private void readFile() throws Exception{
+    private ProcessQueue<Process> readFile() throws Exception{
+        ProcessQueue<Process> processQueue = new ProcessQueue<>();
         File file = new File(filename);
         if(!file.exists()){
             System.out.println("File Not Found");
-            return;
+            return null;
         }
 
         Scanner scanner = new Scanner(file);
@@ -31,6 +32,10 @@ public class A1 {
                 String next = scanner.next();
                 if(next.equals("DISP:")){
                     dispatcherTime = Integer.parseInt(scanner.next());
+                    if(dispatcherTime < 0){
+                        dispatcherTime = 0;
+                        System.out.println("Non positiive Integer set to zero");
+                    }
                 }
 
                 if(next.equals("END")){
@@ -41,8 +46,7 @@ public class A1 {
                     next = scanner.next();
 
                     if(next.equals("EOF")){
-                        run();
-                        return;
+                        return processQueue;
                     }
 
                     if(next.equals("ID:")){
@@ -58,16 +62,23 @@ public class A1 {
                 }
             }
         }
-        
+        return null;
+    }
+
+    private void run() throws Exception{
+        ArrayList<Algorithm> algorithms = new ArrayList<>();
+        algorithms.add(new FirstComeFirstServe(dispatcherTime, readFile()));
+        algorithms.add(new RoundRobin(dispatcherTime, readFile(), timeQuantum));
+        algorithms.add(new NarrowRoundRobin(dispatcherTime, readFile(), timeQuantum));
+        algorithms.add(new FeedbackConstant(dispatcherTime, readFile(), timeQuantum));
+
+        for(int i = 0; i < algorithms.size(); i++){
+            algorithms.get(i).runAlgo();
+            System.out.println(algorithms.get(i).getAlgorithmStats());
+        }
 
     }
 
-    private void run(){
-        FirstComeFirstServe FCFS = new FirstComeFirstServe(dispatcherTime, processQueue);
-        RoundRobin RR = new RoundRobin(dispatcherTime, processQueue, 4);
-        NarrowRoundRobin NRR = new NarrowRoundRobin(dispatcherTime, processQueue, 4);
-        NRR.runAlgo();
-    }
 
     private void printResults(){
         // Print to console and output file
