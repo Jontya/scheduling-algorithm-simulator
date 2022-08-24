@@ -66,7 +66,6 @@ public class FeedbackConstant extends Algorithm{
                     currProcess = priorityQueues.get(4).pop();
                     processingEvents.addDispatcherEvent("T" + currTime + ": " + currProcess.getId() + "\n");
 
-                    
                     currTime += currProcess.getRemainingTime();
 
                     if(processQueue.getSize() != 0){
@@ -99,11 +98,18 @@ public class FeedbackConstant extends Algorithm{
             processingEvents.addDispatcherEvent("T" + currTime + ": " + currProcess.getId() + "\n");
 
             if(currProcess.getExecSize() > timeQuantum){
-                currTime += timeQuantum;
-                currProcess.setRemainingTime(currProcess.getExecSize() - timeQuantum);
-                priorityQueues.get(0).push(currProcess);
-                if(processQueue.getSize() != 0){
-                    primeReadyQueue();
+                if(readyQueue.getSize() == 0 && !checkPriorityLevels(priorityQueues) && processQueue.getSize() == 0){
+                    currTime += currProcess.getRemainingTime();
+                    String[] processingEvent = {currProcess.getId(), Integer.toString(currTime - currProcess.getArriveTime()), Integer.toString(currTime - currProcess.getExecSize() - currProcess.getArriveTime())};
+                    processingEvents.addProcessingEvent(processingEvent);
+                }
+                else{
+                    currTime += timeQuantum;
+                    currProcess.setRemainingTime(currProcess.getExecSize() - timeQuantum);
+                    priorityQueues.get(0).push(currProcess);
+                    if(processQueue.getSize() != 0){
+                        primeReadyQueue();
+                    }
                 }
             }
             else{
