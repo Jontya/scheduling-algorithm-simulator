@@ -19,39 +19,33 @@ public class NarrowRoundRobin extends Algorithm{
         }
 
         while(readyQueue.getSize() != 0){
-            currTime += getDispTime();
-            currProcess = readyQueue.pop();
-            processingEvents.addDispatcherEvent("T" + currTime + ": " + currProcess.getId() + "\n");
+            loadNextProcess(readyQueue);
     
             if(currProcess.getRemainingTime() > currProcess.getTimeQuantum()){
                 if(readyQueue.getSize() == 0 && processQueue.getSize() == 0){
                     currTime += currProcess.getRemainingTime();
-
-                    String[] processingEvent = {currProcess.getId(), Integer.toString(currTime - currProcess.getArriveTime()), Integer.toString(currTime - currProcess.getExecSize() - currProcess.getArriveTime())};
+                    String[] processingEvent = {currProcess.getId(), Integer.toString(currTime - currProcess.getFirstArriveTime()), Integer.toString(currTime - currProcess.getExecSize() - currProcess.getFirstArriveTime())};
                     processingEvents.addProcessingEvent(processingEvent);
+                    return;
                 }
-                else{
-                    currProcess.setRemainingTime(currProcess.getRemainingTime() - currProcess.getTimeQuantum());
-                    currTime += currProcess.getTimeQuantum();
-                    currProcess.decrementTimeQuantum();
 
-                    if(processQueue.getSize() != 0){
-                        primeReadyQueue();
-                    }
+                currProcess.setRemainingTime(currProcess.getRemainingTime() - currProcess.getTimeQuantum());
+                currTime += currProcess.getTimeQuantum();
+                currProcess.setArriveTime(currTime);
+                currProcess.decrementTimeQuantum();
 
-                    readyQueue.push(currProcess);
-                }
+                readyQueue.push(currProcess);
             } 
             else{
                 currTime += currProcess.getRemainingTime();
-
-                if(processQueue.getSize() != 0){
-                    primeReadyQueue();
-                }
-
-                String[] processingEvent = {currProcess.getId(), Integer.toString(currTime - currProcess.getArriveTime()), Integer.toString(currTime - currProcess.getExecSize() - currProcess.getArriveTime())};
+                String[] processingEvent = {currProcess.getId(), Integer.toString(currTime - currProcess.getFirstArriveTime()), Integer.toString(currTime - currProcess.getExecSize() - currProcess.getFirstArriveTime())};
                 processingEvents.addProcessingEvent(processingEvent);
+            }
+
+            if(processQueue.getSize() != 0){
+                primeReadyQueue();
             }
         }
     }
+
 }
