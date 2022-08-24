@@ -7,6 +7,7 @@ public abstract class Algorithm {
     protected Process currProcess;
     protected int currTime;
     protected int timeQuantum;
+    protected int processes;
 
     protected ProcessQueue<Process> processQueue;
     protected ProcessQueue<Process> readyQueue;
@@ -22,6 +23,8 @@ public abstract class Algorithm {
 
         readyQueue = new ProcessQueue<>();
         processingEvents = new ProcessorEvents();
+
+        processes = processQueue.getSize();
     }
 
     public int getDispTime(){
@@ -30,24 +33,25 @@ public abstract class Algorithm {
     
     public void primeReadyQueue(){
         int processQueueSize;
+        Process temp;
         processQueueSize = processQueue.getSize();
 
         for(int i = 0; i < processQueueSize; i++){
-            Process temp = processQueue.pop();
-            if(temp.getArriveTime() <= currTime){
-                readyQueue.push(temp);
+            temp = processQueue.pop(); 
+            if(temp.getArriveTime() <= currTime){ 
+                readyQueue.push(temp); 
             }
-            else{
-                processQueue.push(temp);
+            else{ 
+                processQueue.push(temp); 
             }
         }
     }
+
 
     public String getAlgorithmStats(){
         ArrayList<String> dispatcherEvents = processingEvents.getDispatcherEvents();
         ArrayList<String[]> processEvents = processingEvents.getProcessingEvents();
 
-        
         String algorithmStats = "";
         if(!algoName.equals("FCFS")){
             algorithmStats += "\n" + algoName + ":\n";
@@ -61,7 +65,7 @@ public abstract class Algorithm {
         }
         
         algorithmStats += "\nProcess Turnaround Time Waiting Time\n";
-        for(int i = 0; i < processEvents.size(); i++){
+        for(int i = 0; i < processEvents.size(); i++){ 
             algorithmStats += String.format("%-7s %-15s %-1s", processEvents.get(i)[0], processEvents.get(i)[1], processEvents.get(i)[2]) + "\n";
         }
         return algorithmStats;
@@ -70,18 +74,54 @@ public abstract class Algorithm {
     public String getAlgorithmSummary(){
         String algorithmSummary = "";
         ArrayList<String[]> processEvents = processingEvents.getProcessingEvents();
-        double averageTurnaroundTime = 0;
-        double averageWaitingTime = 0;
+        double sumTurnaroundTime = 0;
+        double sumWaitingTime = 0;
+
 
         for(int i = 0; i < processEvents.size(); i++){
-            averageTurnaroundTime += Integer.parseInt(processEvents.get(i)[1]);
-            averageWaitingTime += Integer.parseInt(processEvents.get(i)[2]);
+            sumTurnaroundTime += Integer.parseInt(processEvents.get(i)[1]);
+            sumWaitingTime += Integer.parseInt(processEvents.get(i)[2]);
         }
 
-        algorithmSummary += String.format("%-15s %-25.2f %-1.2f", algoName, (averageTurnaroundTime / processEvents.size()), (averageWaitingTime / processEvents.size())) + "\n";
+        algorithmSummary += String.format("%-15s %-25.2f %-1.2f", algoName, (sumTurnaroundTime / processEvents.size()), (sumWaitingTime / processEvents.size())) + "\n";
         
-        return algorithmSummary;
+        return algorithmSummary; 
+    }
+
+    public void loadNextProcess(ProcessQueue<Process> queue){
+        if(queue.getSize() != 1){
+            Process temp;
+            currProcess = queue.pop();
+            for(int i = 0; i < queue.getSize(); i++){
+                temp = queue.pop();
+                if(temp.getArriveTime() <= currProcess.getArriveTime()){
+                    if(temp.getArriveTime() == currProcess.getArriveTime()){
+                        if(temp.getIdIdentifier() > currProcess.getIdIdentifier()){
+                            queue.push(currProcess);
+                            currProcess = temp;
+                        }
+                        else{
+                            queue.push(temp);
+                        }
+                    }
+                    else{
+                        queue.push(currProcess);
+                        currProcess = temp;
+                    }
+                }
+                else{
+                    queue.push(temp);
+                }
+            }
+        }
+        else{
+            currProcess = queue.pop();
+        }
+
+        currTime += getDispTime();
+        processingEvents.addDispatcherEvent("T" + currTime + ": " + currProcess.getId() + "\n");
     }
 
     public abstract void runAlgo();
+
 }
