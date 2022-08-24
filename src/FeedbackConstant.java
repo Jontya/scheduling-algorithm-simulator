@@ -25,16 +25,24 @@ public class FeedbackConstant extends Algorithm{
                     processingEvents.addDispatcherEvent("T" + currTime + ": " + currProcess.getId() + "\n");
 
                     if(currProcess.getRemainingTime() > timeQuantum){
-                        currTime += timeQuantum;
-                        currProcess.setRemainingTime(currProcess.getRemainingTime() - timeQuantum);
-                        priorityQueues.get(i+1).push(currProcess);
+                        if(readyQueue.getSize() == 0 && !checkPriorityLevels(priorityQueues) && processQueue.getSize() == 0){
+                            currTime += currProcess.getRemainingTime();
+                            String[] processingEvent = {currProcess.getId(), Integer.toString(currTime - currProcess.getArriveTime()), Integer.toString(currTime - currProcess.getExecSize() - currProcess.getArriveTime())};
+                            processingEvents.addProcessingEvent(processingEvent);
+                        }
+                        else{
+                            currTime += timeQuantum;
+                            currProcess.setRemainingTime(currProcess.getRemainingTime() - timeQuantum);
+                            priorityQueues.get(i+1).push(currProcess);
 
-                        if(processQueue.getSize() != 0){
-                            primeReadyQueue();
-                            if(readyQueue.getSize() != 0){
-                                processReadyQueue(priorityQueues);
+                            if(processQueue.getSize() != 0){
+                                primeReadyQueue();
+                                if(readyQueue.getSize() != 0){
+                                    processReadyQueue(priorityQueues);
+                                }
                             }
                         }
+
                     }
                     else{
                         currTime += currProcess.getRemainingTime();
