@@ -27,45 +27,51 @@ public class A1{
 
         Scanner scanner = new Scanner(file);
 
-        if(scanner.next().equals("BEGIN")){
-            while(scanner.hasNext()){
-                String next = scanner.next();
-                if(next.equals("DISP:")){
-                    dispatcherTime = Integer.parseInt(scanner.next());
-                    if(dispatcherTime < 0){
-                        dispatcherTime = 0;
-                        System.out.println("Non positiive Integer set to zero");
+        try{
+            if(scanner.next().equals("BEGIN")){
+                while(scanner.hasNext()){
+                    String next = scanner.next();
+                    if(next.equals("DISP:")){
+                        dispatcherTime = Integer.parseInt(scanner.next());
+                        if(dispatcherTime < 0){
+                            dispatcherTime = 0;
+                            System.out.println("Non positive Integer set to zero");
+                        }
                     }
-                }
-
-                if(next.equals("END")){
-                    String id = "";
-                    int arriveTime = 0;
-                    int execSize = 0;
-
-                    next = scanner.next();
-
-                    if(next.equals("EOF")){
-                        return processQueue;
+    
+                    if(next.equals("END")){
+                        String id = "";
+                        int arriveTime = 0;
+                        int execSize = 0;
+    
+                        next = scanner.next();
+    
+                        if(next.equals("EOF")){
+                            return processQueue;
+                        }
+    
+                        if(next.equals("ID:")){
+                            id = scanner.next();
+                        }
+                        if(scanner.next().equals("Arrive:")){
+                            arriveTime = Integer.parseInt(scanner.next());
+                        }
+                        if(scanner.next().equals("ExecSize:")){
+                            execSize = Integer.parseInt(scanner.next());
+                        }
+                        processQueue.push(new Process(id, arriveTime, execSize));
                     }
-
-                    if(next.equals("ID:")){
-                        id = scanner.next();
-                    }
-                    if(scanner.next().equals("Arrive:")){
-                        arriveTime = Integer.parseInt(scanner.next());
-                    }
-                    if(scanner.next().equals("ExecSize:")){
-                        execSize = Integer.parseInt(scanner.next());
-                    }
-                    processQueue.push(new Process(id, arriveTime, execSize));
                 }
             }
+        } 
+        finally{
+            scanner.close();
         }
         return null;
     }
 
     private void run() throws Exception{
+        String output = "";
         ArrayList<Algorithm> algorithms = new ArrayList<>();
         algorithms.add(new FirstComeFirstServe(dispatcherTime, readFile()));
         algorithms.add(new RoundRobin(dispatcherTime, readFile(), timeQuantum));
@@ -74,14 +80,22 @@ public class A1{
 
         for(int i = 0; i < algorithms.size(); i++){
             algorithms.get(i).runAlgo();
-            System.out.println(algorithms.get(i).getAlgorithmStats());
+            output += algorithms.get(i).getAlgorithmStats();
         }
 
+        printResults(output);
     }
 
 
-    private void printResults(){
-        // Print to console and output file
+    private void printResults(String output) throws Exception{
+        try{
+            FileWriter outputFile = new FileWriter(filename.split("[.]", 0)[0] + "_output.txt");
+            outputFile.write(output);
+            outputFile.close();
+            System.out.println(output);
+        }
+        catch (IOException e){
+            System.out.println("Output Error");
+        }
     }
-
 }
