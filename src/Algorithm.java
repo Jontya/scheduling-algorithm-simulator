@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.io.Console;
 
 public abstract class Algorithm {
@@ -12,8 +13,7 @@ public abstract class Algorithm {
     protected ProcessQueue<Process> processQueue;
     protected ProcessQueue<Process> readyQueue;
 
-    protected ArrayList<String> dispatcherEvents;
-    protected ArrayList<String[]> processingEvents;
+    protected ProcessorEvents processingEvents;
 
     String fmt = "%1$4s %2$10s %3$10s%n";  
     static Console col = System.console();  
@@ -27,8 +27,7 @@ public abstract class Algorithm {
         currProcess = null;
 
         readyQueue = new ProcessQueue<>();
-        dispatcherEvents = new ArrayList<>();
-        processingEvents = new ArrayList<>();
+        processingEvents = new ProcessorEvents();
     }
 
     public int getDispTime(){
@@ -50,17 +49,19 @@ public abstract class Algorithm {
     }
 
     public String getAlgorithmStats(){
+        ArrayList<String> dispatcherEvents = processingEvents.getDispatcherEvents();
+        ArrayList<String[]> processEvents = processingEvents.getProcessingEvents();
+
         String algorithmStats = algoName + ":\n";
         for(int i = 0; i < dispatcherEvents.size(); i++){
             algorithmStats += dispatcherEvents.get(i);
         }
 
-        // TO DO: Sort processing events queue, output to file and make algos only run once when they have one item left
-
+        // TO DO: output to file and make algos only run once when they have one item left
+        
         algorithmStats += "\nProcess Turnaround Time Waiting Time\n";
-        for(int i = 0; i < processingEvents.size(); i++){
-            algorithmStats += String.format("%-7s %-15s %-1s", processingEvents.get(i)[0], processingEvents.get(i)[1], processingEvents.get(i)[2]) + "\n";
-    
+        for(int i = 0; i < processEvents.size(); i++){
+            algorithmStats += String.format("%-7s %-15s %-1s", processEvents.get(i)[0], processEvents.get(i)[1], processEvents.get(i)[2]) + "\n";
         }
         return algorithmStats;
     }
