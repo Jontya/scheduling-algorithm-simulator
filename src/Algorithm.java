@@ -67,5 +67,21 @@ public abstract class Algorithm {
         return algorithmStats;
     }
 
+    public String getAlgorithmSummary(){
+        String algorithmSummary = "";
+        ArrayList<String[]> processEvents = processingEvents.getProcessingEvents();
+        double averageTurnaroundTime = 0;
+        double averageWaitingTime = 0;
+
+        for(int i = 0; i < processEvents.size(); i++){
+            averageTurnaroundTime += Integer.parseInt(processEvents.get(i)[1]);
+            averageWaitingTime += Integer.parseInt(processEvents.get(i)[2]);
+        }
+
+        algorithmSummary += String.format("%-15s %-25.2f %-1.2f", algoName, (averageTurnaroundTime / processEvents.size()), (averageWaitingTime / processEvents.size())) + "\n";
+        
+        return algorithmSummary;
+    }
+
     public abstract void runAlgo();
 }
