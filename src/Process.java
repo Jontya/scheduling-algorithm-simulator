@@ -3,6 +3,7 @@ public class Process {
     private int arriveTime;
     private int execSize;
     private int remainingTime;
+    private int firstArriveTime;
     
     private int finishedTime;
     private int turnaroundTime;
@@ -16,6 +17,7 @@ public class Process {
         arriveTime = _arriveTime;
         execSize = _execSize;
         remainingTime = _execSize;
+        firstArriveTime = _arriveTime;
     }
 
     public void setProcessingStats(int _turnaroundTime, int _waitingTime, int _finishedTime){
@@ -26,6 +28,14 @@ public class Process {
 
     public String getId(){
         return id;
+    }
+
+    public int getFirstArriveTime(){
+        return firstArriveTime;
+    }
+
+    public int getIdIdentifier(){
+        return Character.getType(id.charAt(id.length() - 1));
     }
 
     public int getArriveTime(){
@@ -42,6 +52,10 @@ public class Process {
 
     public int getTimeQuantum(){
         return timeQuantum;
+    }
+
+    public void setArriveTime(int _arriveTime){
+        arriveTime = _arriveTime;
     }
 
     public void setTimeQuantum(int _timeQuantum, int _minTimeQuantum){
