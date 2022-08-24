@@ -5,6 +5,7 @@ public class FirstComeFirstServe extends Algorithm{
         algoName = "FCFS";
     }
 
+    @Override
     public void runAlgo(){
 
         if(processQueue.getSize() != 0){

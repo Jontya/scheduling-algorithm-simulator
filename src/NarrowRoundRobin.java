@@ -5,6 +5,7 @@ public class NarrowRoundRobin extends Algorithm{
         algoName = "NRR";
     }
 
+    @Override
     public void runAlgo(){
 
         for(int i = 0; i < processQueue.getSize(); i++){
@@ -52,9 +53,5 @@ public class NarrowRoundRobin extends Algorithm{
                 processingEvents.addProcessingEvent(processingEvent);
             }
         }
-    }
-
-    public String getAlgoStats(){
-        return "";
     }
 }

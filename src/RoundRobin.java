@@ -5,6 +5,7 @@ public class RoundRobin extends Algorithm{
         algoName = "RR";
     }
 
+    @Override
     public void runAlgo(){
         if(processQueue.getSize() != 0){
             primeReadyQueue();
@@ -43,9 +44,5 @@ public class RoundRobin extends Algorithm{
                 processingEvents.addProcessingEvent(processingEvent);
             }
         }
-    }
-
-    public String getAlgoStats(){
-        return "";
     }
 }

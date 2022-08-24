@@ -7,6 +7,7 @@ public class FeedbackConstant extends Algorithm{
         algoName = "FB (constant)";
     }
 
+    @Override
     public void runAlgo(){
         ArrayList<ProcessQueue<Process>> priorityQueues = new ArrayList<>();
         for(int i = 0; i < 5; i++){
