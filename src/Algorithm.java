@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collections;
-import java.io.Console;
 
 public abstract class Algorithm {
     private static int dispatcherTime;
@@ -14,10 +12,6 @@ public abstract class Algorithm {
     protected ProcessQueue<Process> readyQueue;
 
     protected ProcessorEvents processingEvents;
-
-    String fmt = "%1$4s %2$10s %3$10s%n";  
-    static Console col = System.console();  
-    
 
     public Algorithm(int _dispatcherTime, ProcessQueue<Process> _processQueue){
         currTime = 0;
@@ -37,6 +31,7 @@ public abstract class Algorithm {
     public void primeReadyQueue(){
         int processQueueSize;
         processQueueSize = processQueue.getSize();
+
         for(int i = 0; i < processQueueSize; i++){
             Process temp = processQueue.pop();
             if(temp.getArriveTime() <= currTime){
@@ -52,12 +47,18 @@ public abstract class Algorithm {
         ArrayList<String> dispatcherEvents = processingEvents.getDispatcherEvents();
         ArrayList<String[]> processEvents = processingEvents.getProcessingEvents();
 
-        String algorithmStats = algoName + ":\n";
+        
+        String algorithmStats = "";
+        if(!algoName.equals("FCFS")){
+            algorithmStats += "\n" + algoName + ":\n";
+        }
+        else{
+            algorithmStats += algoName + ":\n";
+        }
+
         for(int i = 0; i < dispatcherEvents.size(); i++){
             algorithmStats += dispatcherEvents.get(i);
         }
-
-        // TO DO: output to file and make algos only run once when they have one item left
         
         algorithmStats += "\nProcess Turnaround Time Waiting Time\n";
         for(int i = 0; i < processEvents.size(); i++){
