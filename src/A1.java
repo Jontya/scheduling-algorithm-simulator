@@ -1,14 +1,3 @@
-//---------------------------------------------------------------------------------------------------
-/** COMP2240 A1
-*** Jonty Atkinson (C3391110)
-*** 24/08/22
-***
-*** A1:
-*** Main class for the program, contains a method for reading in processes, running the algorithms,
-*** and printing the output to both a file and the console.
-**/
-//---------------------------------------------------------------------------------------------------
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,11 +11,11 @@ public class A1{
 
     public static void main(String[] args) throws Exception{
         try{
-            filename = args[0]; // stores file name
-            A1 schedulingAlgorithmSimulator = new A1(); // creates a new instance of A1
-            schedulingAlgorithmSimulator.run(); // runs the program
+            filename = args[0];
+            A1 schedulingAlgorithmSimulator = new A1();
+            schedulingAlgorithmSimulator.run();
         }
-        catch(ArrayIndexOutOfBoundsException e){ // Throws exception if the filename is not entered
+        catch(ArrayIndexOutOfBoundsException e){
             System.out.println("Missing Filename Argument");
         }
     }
@@ -35,7 +24,7 @@ public class A1{
         ProcessQueue<Process> processQueue = new ProcessQueue<>();
         File file = new File(filename);
 
-        // Checks if the file exists
+        
         if(!file.exists()){
             System.out.println("File Not Found");
             return null;
@@ -45,63 +34,62 @@ public class A1{
 
         try{
             String next = "";
-            while(!next.equals("BEGIN")){ // Checks for the file entry point
+            while(!next.equals("BEGIN")){ 
                 next = scanner.next();
             }
-            if(next.equals("BEGIN")){ // If it exists
+            if(next.equals("BEGIN")){ 
                 while(scanner.hasNext()){
-                    next = scanner.next(); // Gets the next item in the file
-                    if(next.equals("DISP:")){ // Checks for dispatcher time
-                        dispatcherTime = Integer.parseInt(scanner.next()); // Sets the dispatcher time
+                    next = scanner.next(); 
+                    if(next.equals("DISP:")){ 
+                        dispatcherTime = Integer.parseInt(scanner.next()); 
                         if(dispatcherTime < 0){
                             dispatcherTime = 0;
-                            System.out.println("Non positive Integer set to zero"); // Sets to 0 if < 0
+                            System.out.println("Non positive Integer set to zero");
                         }
                     }
     
-                    if(next.equals("END")){ // Looks to read in a new process if one exists
+                    if(next.equals("END")){ 
                         String id = "";
                         int arriveTime = 0;
                         int execSize = 0;
     
                         next = scanner.next();
     
-                        if(next.equals("EOF")){ // Checks if another process exists or if its the end of the file
+                        if(next.equals("EOF")){ 
                             return processQueue;
                         }
     
-                        if(next.equals("ID:")){ // Checks and sets the process ID
+                        if(next.equals("ID:")){ 
                             id = scanner.next();
                         }
-                        if(scanner.next().equals("Arrive:")){ // Checks and sets process arrive time 
+                        if(scanner.next().equals("Arrive:")){ 
                             arriveTime = Integer.parseInt(scanner.next());
                         }
-                        if(scanner.next().equals("ExecSize:")){ // Checks and sets process execution time / size
+                        if(scanner.next().equals("ExecSize:")){ 
                             execSize = Integer.parseInt(scanner.next());
                         }
-                        processQueue.push(new Process(id, arriveTime, execSize)); // Adds the new process to the list
+                        processQueue.push(new Process(id, arriveTime, execSize)); 
                     }
                 }
             }
         } 
         finally{
-            scanner.close(); // closes scanner
+            scanner.close();
         }
 
-        // returns null if the file format is invalid
         return null;
     }
 
     private void run() throws Exception{
         String output = "";
         String summary = "";
-        ArrayList<Algorithm> algorithms = new ArrayList<>(); // Creates algorithm list and adds each algorithm
+        ArrayList<Algorithm> algorithms = new ArrayList<>(); 
         algorithms.add(new FirstComeFirstServe(dispatcherTime, readFile()));
         algorithms.add(new RoundRobin(dispatcherTime, readFile(), timeQuantum));
         algorithms.add(new NarrowRoundRobin(dispatcherTime, readFile(), timeQuantum));
         algorithms.add(new FeedbackConstant(dispatcherTime, readFile(), timeQuantum));
 
-        for(int i = 0; i < algorithms.size(); i++){ // Runs each algorithm and adds its output stats to the output string
+        for(int i = 0; i < algorithms.size(); i++){
             algorithms.get(i).runAlgo();
             output += algorithms.get(i).getAlgorithmStats();
         }
@@ -112,16 +100,16 @@ public class A1{
         }
 
 
-        printResults(output + summary); // Prints the results
+        printResults(output + summary); 
     }
 
 
     private void printResults(String output) throws Exception{
         try{
-            FileWriter outputFile = new FileWriter(filename.split("[.]", 0)[0] + "_output.txt"); // creates a new file
-            outputFile.write(output); // Writes to a new file
+            FileWriter outputFile = new FileWriter(filename.split("[.]", 0)[0] + "_output.txt");
+            outputFile.write(output); 
             outputFile.close();
-            System.out.println(output); // Prints to the console
+            System.out.println(output);
         }
         catch (IOException e){
             System.out.println("Output Error");
