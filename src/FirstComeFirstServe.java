@@ -15,12 +15,12 @@ public class FirstComeFirstServe extends Algorithm{
             currTime += getDispTime();
             currProcess = readyQueue.pop();
 
-            dispatcherEvents.add("T" + currTime + ": " + currProcess.getId() + "\n");
+            processingEvents.addDispatcherEvent("T" + currTime + ": " + currProcess.getId() + "\n");
 
             currTime += currProcess.getExecSize();
 
             String[] processingEvent = {currProcess.getId(), Integer.toString(currTime - currProcess.getArriveTime()), Integer.toString(currTime - currProcess.getExecSize() - currProcess.getArriveTime())};
-            processingEvents.add(processingEvent);
+            processingEvents.addProcessingEvent(processingEvent);
 
             if(processQueue.getSize() != 0){
                 primeReadyQueue();

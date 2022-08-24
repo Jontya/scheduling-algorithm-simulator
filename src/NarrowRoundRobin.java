@@ -20,14 +20,14 @@ public class NarrowRoundRobin extends Algorithm{
         while(readyQueue.getSize() != 0){
             currTime += getDispTime();
             currProcess = readyQueue.pop();
-            dispatcherEvents.add("T" + currTime + ": " + currProcess.getId() + "\n");
+            processingEvents.addDispatcherEvent("T" + currTime + ": " + currProcess.getId() + "\n");
     
             if(currProcess.getRemainingTime() > currProcess.getTimeQuantum()){
                 if(readyQueue.getSize() == 0 && processQueue.getSize() == 0){
                     currTime += currProcess.getRemainingTime();
 
                     String[] processingEvent = {currProcess.getId(), Integer.toString(currTime - currProcess.getArriveTime()), Integer.toString(currTime - currProcess.getExecSize() - currProcess.getArriveTime())};
-                    processingEvents.add(processingEvent);
+                    processingEvents.addProcessingEvent(processingEvent);
                 }
                 else{
                     currProcess.setRemainingTime(currProcess.getRemainingTime() - currProcess.getTimeQuantum());
@@ -49,7 +49,7 @@ public class NarrowRoundRobin extends Algorithm{
                 }
 
                 String[] processingEvent = {currProcess.getId(), Integer.toString(currTime - currProcess.getArriveTime()), Integer.toString(currTime - currProcess.getExecSize() - currProcess.getArriveTime())};
-                processingEvents.add(processingEvent);
+                processingEvents.addProcessingEvent(processingEvent);
             }
         }
     }

@@ -22,7 +22,7 @@ public class FeedbackConstant extends Algorithm{
                 while(priorityQueues.get(i).getSize() != 0){
                     currTime += getDispTime();
                     currProcess = priorityQueues.get(i).pop();
-                    dispatcherEvents.add("T" + currTime + ": " + currProcess.getId() + "\n");
+                    processingEvents.addDispatcherEvent("T" + currTime + ": " + currProcess.getId() + "\n");
 
                     if(currProcess.getRemainingTime() > timeQuantum){
                         currTime += timeQuantum;
@@ -48,7 +48,7 @@ public class FeedbackConstant extends Algorithm{
                         }
 
                         String[] processingEvent = {currProcess.getId(), Integer.toString(currTime - currProcess.getArriveTime()), Integer.toString(currTime - currProcess.getExecSize() - currProcess.getArriveTime())};
-                        processingEvents.add(processingEvent);
+                        processingEvents.addProcessingEvent(processingEvent);
                     }
                 }
             }
@@ -56,7 +56,7 @@ public class FeedbackConstant extends Algorithm{
                 while(priorityQueues.get(4).getSize() != 0){
                     currTime += getDispTime();
                     currProcess = priorityQueues.get(4).pop();
-                    dispatcherEvents.add("T" + currTime + ": " + currProcess.getId() + "\n");
+                    processingEvents.addDispatcherEvent("T" + currTime + ": " + currProcess.getId() + "\n");
 
                     
                     currTime += currProcess.getRemainingTime();
@@ -68,7 +68,7 @@ public class FeedbackConstant extends Algorithm{
                         }
 
                         String[] processingEvent = {currProcess.getId(), Integer.toString(currTime - currProcess.getArriveTime()), Integer.toString(currTime - currProcess.getExecSize() - currProcess.getArriveTime())};
-                        processingEvents.add(processingEvent);
+                        processingEvents.addProcessingEvent(processingEvent);
                     }
                 }            
             }
@@ -88,7 +88,7 @@ public class FeedbackConstant extends Algorithm{
         while(readyQueue.getSize() != 0){
             currTime += getDispTime();
             currProcess = readyQueue.pop();
-            dispatcherEvents.add("T" + currTime + ": " + currProcess.getId() + "\n");
+            processingEvents.addDispatcherEvent("T" + currTime + ": " + currProcess.getId() + "\n");
 
             if(currProcess.getExecSize() > timeQuantum){
                 currTime += timeQuantum;
@@ -106,7 +106,7 @@ public class FeedbackConstant extends Algorithm{
                 }
 
                 String[] processingEvent = {currProcess.getId(), Integer.toString(currTime - currProcess.getArriveTime()), Integer.toString(currTime - currProcess.getExecSize() - currProcess.getArriveTime())};
-                processingEvents.add(processingEvent);
+                processingEvents.addProcessingEvent(processingEvent);
             }
         }
     }
